@@ -2,9 +2,9 @@ package com.sheikh.shoppinglist.domain
 
 interface Repository {
 
-    fun getShopItem(id: Int)
+    fun getShopItem(id: Int): ShopItem
 
-    fun editShopItem(item: ShopItem): ShopItem
+    fun editShopItem(item: ShopItem)
 
     fun deleteShopItem(item: ShopItem)
 
