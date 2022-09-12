@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShoppingList">
         <activity
+            android:name=".presentation.screens.DetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.screens.MainActivity"
             android:exported="true">
             <intent-filter>
