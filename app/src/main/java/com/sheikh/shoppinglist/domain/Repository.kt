@@ -1,5 +1,7 @@
 package com.sheikh.shoppinglist.domain
 
+import androidx.lifecycle.LiveData
+
 interface Repository {
 
     fun getShopItem(id: Int): ShopItem
@@ -10,5 +12,5 @@ interface Repository {
 
     fun addShopItem(item: ShopItem)
 
-    fun getShoppingList(): List<ShopItem>
+    fun getShoppingList(): LiveData<List<ShopItem>>
 }
