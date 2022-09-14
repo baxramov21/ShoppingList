@@ -11,6 +11,7 @@
         android:theme="@style/Theme.ShoppingList">
         <activity
             android:name=".presentation.screens.DetailActivity"
+             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".presentation.screens.MainActivity"
