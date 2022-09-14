@@ -1,5 +1,6 @@
 package com.sheikh.shoppinglist.presentation.screens
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun newItem(view: View) {
-        Toast.makeText(this, "New item", Toast.LENGTH_SHORT).show()
+        startActivity(DetailActivity.newIntentAddItem(this))
     }
 
     private fun setUpRecyclerView() {
@@ -79,7 +80,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupOnClickListener() {
         shopItemsAdapter.onShopIteClickListener = {
-            Log.d("shopItemInfo", "Item $it")
+            val intent = DetailActivity.newIntentEditItem(this, it.ID)
+            startActivity(intent)
+
         }
     }
 
