@@ -1,4 +1,6 @@
-package com.sheikh.shoppinglist.domain
+package com.sheikh.shoppinglist.domain.items
+
+import com.sheikh.shoppinglist.domain.repository.Repository
 
 class GetShopItem(private val repository: Repository) {
 

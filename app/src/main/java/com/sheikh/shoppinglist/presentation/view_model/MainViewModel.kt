@@ -2,10 +2,10 @@ package com.sheikh.shoppinglist.presentation.view_model
 
 import androidx.lifecycle.ViewModel
 import com.sheikh.shoppinglist.data.RepositoryIml
-import com.sheikh.shoppinglist.domain.DeleteShopItemUseCase
-import com.sheikh.shoppinglist.domain.EditShopItemUseCase
-import com.sheikh.shoppinglist.domain.GetShoppingListUseCase
-import com.sheikh.shoppinglist.domain.ShopItem
+import com.sheikh.shoppinglist.domain.usecases.DeleteShopItemUseCase
+import com.sheikh.shoppinglist.domain.usecases.EditShopItemUseCase
+import com.sheikh.shoppinglist.domain.usecases.GetShoppingListUseCase
+import com.sheikh.shoppinglist.domain.items.ShopItem
 
 class MainViewModel : ViewModel() {
 

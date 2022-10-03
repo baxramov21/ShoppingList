@@ -2,11 +2,9 @@ package com.sheikh.shoppinglist.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.sheikh.shoppinglist.R
-import com.sheikh.shoppinglist.domain.ShopItem
+import com.sheikh.shoppinglist.domain.items.ShopItem
 
 class ShopItemsAdapter : ListAdapter<ShopItem, ShopItemsViewHolder>(ShopItemDiffCallback()) {
 

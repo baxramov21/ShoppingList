@@ -1,7 +1,7 @@
 package com.sheikh.shoppinglist.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.sheikh.shoppinglist.domain.ShopItem
+import com.sheikh.shoppinglist.domain.items.ShopItem
 
 class ShopItemDiffCallback : DiffUtil.ItemCallback<ShopItem>() {
 

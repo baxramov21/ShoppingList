@@ -1,13 +1,14 @@
 package com.sheikh.shoppinglist.presentation.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sheikh.shoppinglist.data.RepositoryIml
-import com.sheikh.shoppinglist.domain.AddShopItemUseCase
-import com.sheikh.shoppinglist.domain.EditShopItemUseCase
-import com.sheikh.shoppinglist.domain.GetShopItem
-import com.sheikh.shoppinglist.domain.ShopItem
+import com.sheikh.shoppinglist.domain.usecases.AddShopItemUseCase
+import com.sheikh.shoppinglist.domain.usecases.EditShopItemUseCase
+import com.sheikh.shoppinglist.domain.items.GetShopItem
+import com.sheikh.shoppinglist.domain.items.ShopItem
 import java.lang.Exception
 
 class ShopItemViewModel : ViewModel() {
@@ -38,10 +39,12 @@ class ShopItemViewModel : ViewModel() {
         val name = parseName(inputName)
         val count = parseCount(inputCount)
         val isInputsValid = validateInputs(name, count)
+        Log.d("inputsValid",isInputsValid.toString())
         if (isInputsValid) {
             _shopItem.value?.let {
                 val copiedItem = it.copy(shopItemName = name, shopItemCount = count)
                 editItemUseCase.editShopItem(copiedItem)
+                Log.d("itemIS", it.toString())
                 closeScreen()
             }
         }
