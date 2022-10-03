@@ -1,4 +1,4 @@
-package com.sheikh.shoppinglist.domain
+package com.sheikh.shoppinglist.domain.items
 
 data class ShopItem(
     val shopItemName: String,

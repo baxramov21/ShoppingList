@@ -2,8 +2,8 @@ package com.sheikh.shoppinglist.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.sheikh.shoppinglist.domain.Repository
-import com.sheikh.shoppinglist.domain.ShopItem
+import com.sheikh.shoppinglist.domain.repository.Repository
+import com.sheikh.shoppinglist.domain.items.ShopItem
 import kotlin.random.Random
 
 object RepositoryIml : Repository {
