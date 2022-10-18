@@ -4,16 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputLayout
 import com.sheikh.shoppinglist.R
 import com.sheikh.shoppinglist.domain.items.ShopItem
-import com.sheikh.shoppinglist.presentation.view_model.MainViewModel
 import com.sheikh.shoppinglist.presentation.view_model.ShopItemViewModel
 
 class DetailActivity : AppCompatActivity() {
@@ -22,16 +23,9 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var tilCount: TextInputLayout
     private lateinit var etName: EditText
     private lateinit var etCount: EditText
-
     private lateinit var viewModel: ShopItemViewModel
-    private lateinit var mainViewModel: MainViewModel
-
     private var shopItemID = ShopItem.UNDEFINED_ID
     private var screenMode = UNDEFINED_SCREEN_MODE
-    private lateinit var itemName: String
-    // staring value is -1 but it will change in process
-    private var itemCount: Int = ShopItem.UNDEFINED_ID
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +33,30 @@ class DetailActivity : AppCompatActivity() {
         parseIntent()
         initViews()
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        openScreenMode()
+        launchScreenMode()
+        inNoErrorInValues(etName)
+        inNoErrorInValues(etCount)
     }
 
-    private fun openScreenMode() {
+    private fun inNoErrorInValues(editText: EditText) {
+        addTextChangedListener(editText) {
+            noErrorInValues()
+        }
+    }
+
+    private fun addTextChangedListener(editText: EditText, onTextChanged: () -> Unit) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                onTextChanged()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {}
+        })
+    }
+
+    private fun launchScreenMode() {
         when (screenMode) {
             MODE_ADD -> launchAddItemMode()
             MODE_EDIT -> launchEditItemMode()
@@ -57,22 +70,20 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun launchAddItemMode() {
+        showToast("Create new item")
+    }
+
     private fun initET(shopItem: ShopItem) {
         with(shopItem) {
             etName.text = shopItemName.toEditable()
             etCount.text = shopItemCount.toString().toEditable()
-            itemName = shopItemName
-            itemCount = shopItemCount
         }
     }
 
     // Change String to Editable
     private fun String.toEditable(): Editable =
         Editable.Factory.getInstance().newEditable(this)
-
-    private fun launchAddItemMode() {
-
-    }
 
     private fun initViews() {
         tilName = findViewById(R.id.til_name)
@@ -102,12 +113,38 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun onErrorInValues() {
+        tilName.error = "Name or count is wrong "
+        tilCount.error = "Name or count is wrong "
+    }
+
+    private fun noErrorInValues() {
+        tilName.error = null
+        tilCount.error = null
+    }
+
+    private fun getNewName(): String = etName.text.toString()
+
+    private fun getNewCount(): String = etCount.text.toString()
+
     fun onClickSaveItem(view: View) {
-        if (screenMode == MODE_EDIT) {
-            viewModel.editCurrentItem(itemName, itemCount.toString())
-            startMainActivity()
+        val itemNewName = getNewName()
+        val itemNewCount = getNewCount()
+
+        if (itemNewCount.isBlank() || itemNewCount.isEmpty()
+            || itemNewName.isEmpty() || itemNewName.isEmpty()
+        ) {
+            onErrorInValues()
         } else {
-            showToast("Error: Can't save item")
+            noErrorInValues()
+            if (screenMode == MODE_EDIT) {
+                viewModel.editCurrentItem(itemNewName, itemNewCount)
+                startMainActivity()
+            } else if (screenMode == MODE_ADD) {
+                showToast("Add new item")
+                viewModel.addNewItem(itemNewName, itemNewCount)
+                startMainActivity()
+            }
         }
     }
 
@@ -120,7 +157,6 @@ class DetailActivity : AppCompatActivity() {
     }
 
     companion object {
-
         private const val EXTRA_SCREEN_MODE = "extra_mode"
         private const val MODE_ADD = "mode_add"
         private const val MODE_EDIT = "mode_edit"
