@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputLayout
 import com.sheikh.shoppinglist.R
@@ -23,9 +23,12 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var tilCount: TextInputLayout
     private lateinit var etName: EditText
     private lateinit var etCount: EditText
+
     private lateinit var viewModel: ShopItemViewModel
     private var shopItemID = ShopItem.UNDEFINED_ID
     private var screenMode = UNDEFINED_SCREEN_MODE
+    private lateinit var nameInputError: MutableLiveData<Boolean>
+    private lateinit var countInputError: MutableLiveData<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +39,15 @@ class DetailActivity : AppCompatActivity() {
         launchScreenMode()
         inNoErrorInValues(etName)
         inNoErrorInValues(etCount)
+        nameInputError =  viewModel.errorInputName as MutableLiveData<Boolean>
+        countInputError = viewModel.errorInputCount as MutableLiveData<Boolean>
+    }
+
+    private fun resetInputErrors() {
+        with(viewModel) {
+            resetErrorInputName()
+            resetErrorInputCount()
+        }
     }
 
     private fun inNoErrorInValues(editText: EditText) {
@@ -116,35 +128,56 @@ class DetailActivity : AppCompatActivity() {
     private fun onErrorInValues() {
         tilName.error = "Name or count is wrong "
         tilCount.error = "Name or count is wrong "
+        nameInputError.value = true
+        countInputError.value = true
     }
 
     private fun noErrorInValues() {
         tilName.error = null
         tilCount.error = null
+        resetInputErrors()
     }
 
     private fun getNewName(): String = etName.text.toString()
 
     private fun getNewCount(): String = etCount.text.toString()
 
+    private fun nameInputError(): Boolean {
+        var errorInName = true
+        nameInputError.observe(this) {
+            errorInName = it
+        }
+        return errorInName
+    }
+
+    private fun countInputError(): Boolean {
+        var errorInCount = true
+        countInputError.observe(this) {
+            errorInCount = it
+        }
+        return errorInCount
+    }
+
     fun onClickSaveItem(view: View) {
         val itemNewName = getNewName()
         val itemNewCount = getNewCount()
 
-        if (itemNewCount.isBlank() || itemNewCount.isEmpty()
-            || itemNewName.isEmpty() || itemNewName.isEmpty()
-        ) {
-            onErrorInValues()
-        } else {
+        if (!nameInputError() && !countInputError()) {
             noErrorInValues()
-            if (screenMode == MODE_EDIT) {
-                viewModel.editCurrentItem(itemNewName, itemNewCount)
-                startMainActivity()
-            } else if (screenMode == MODE_ADD) {
-                showToast("Add new item")
-                viewModel.addNewItem(itemNewName, itemNewCount)
-                startMainActivity()
-            }
+            chooseMode(itemNewName, itemNewCount)
+        } else {
+            onErrorInValues()
+        }
+    }
+
+    private fun chooseMode(itemNewName: String, itemNewCount: String) {
+        if (screenMode == MODE_EDIT) {
+            viewModel.editCurrentItem(itemNewName, itemNewCount)
+            startMainActivity()
+        } else if (screenMode == MODE_ADD) {
+            showToast("Add new item")
+            viewModel.addNewItem(itemNewName, itemNewCount)
+            startMainActivity()
         }
     }
 

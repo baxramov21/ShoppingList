@@ -66,6 +66,14 @@ class ShopItemViewModel : ViewModel() {
         _shopItem.value = item
     }
 
+    fun resetErrorInputName() {
+        _errorInputName.value = false // this was false
+    }
+
+    fun resetErrorInputCount() {
+        _errorInputCount.value = false   // this was false
+    }
+
     private fun parseName(name: String?): String {
         return name?.trim() ?: ""
     }
@@ -90,14 +98,6 @@ class ShopItemViewModel : ViewModel() {
             result = false
         }
         return result
-    }
-
-    fun resetErrorInputName() {
-        _errorInputName.value = false
-    }
-
-    fun resetErrorInputCount() {
-        _errorInputCount.value = false
     }
 
     private fun closeScreen() {
