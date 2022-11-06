@@ -5,13 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
@@ -20,10 +18,7 @@ import com.sheikh.shoppinglist.R
 import com.sheikh.shoppinglist.domain.items.ShopItem
 import com.sheikh.shoppinglist.presentation.view_model.ShopItemViewModel
 
-class DetailScreenFragment(
-    private val screenMode: String = UNDEFINED_SCREEN_MODE,
-    private val shopItemID: Int = ShopItem.UNDEFINED_ID
-) : Fragment() {
+class DetailScreenFragment : Fragment() {
 
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
@@ -36,6 +31,14 @@ class DetailScreenFragment(
     private lateinit var countInputError: MutableLiveData<Boolean>
 
 
+    private var screenMode_value: String = UNDEFINED_SCREEN_MODE
+    private var shopItemID_value: Int = ShopItem.UNDEFINED_ID
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseParams()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,7 +50,6 @@ class DetailScreenFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        parseParams()
         initViews(view)
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         launchScreenMode()
@@ -88,14 +90,14 @@ class DetailScreenFragment(
     }
 
     private fun launchScreenMode() {
-        when (screenMode) {
+        when (screenMode_value) {
             MODE_ADD -> launchAddItemMode()
             MODE_EDIT -> launchEditItemMode()
         }
     }
 
     private fun launchEditItemMode() {
-        viewModel.getItem(shopItemID)
+        viewModel.getItem(shopItemID_value)
         viewModel.shopItem.observe(viewLifecycleOwner) {
             initET(it)
         }
@@ -127,11 +129,27 @@ class DetailScreenFragment(
     }
 
     private fun parseParams() {
-      if (screenMode != MODE_ADD && screenMode != MODE_EDIT) {
-          throw RuntimeException("Param screen mode is null")
-      }
-        if (screenMode == MODE_EDIT && shopItemID == ShopItem.UNDEFINED_ID) {
-            throw RuntimeException("No item found with this ID")
+        val args = requireArguments()
+        if (!args.containsKey(PARAM_SCREEN_MODE)) {
+            throw RuntimeException("Param screen mode is null")
+        }
+
+        val mode = args.getString(PARAM_SCREEN_MODE)
+
+        if (mode != MODE_ADD && mode != MODE_EDIT) {
+            throw RuntimeException("Unknown screen mode")
+        }
+
+        // If everything is ok so set the value to variable
+        screenMode_value = mode
+
+        if (mode == MODE_EDIT) {
+            if (!args.containsKey(PARAM_SHOP_ITEM_ID)) {
+                throw RuntimeException("Unknown screen mode")
+            }
+
+            // If everything is ok so set the value to variable
+            shopItemID_value = args.getInt(PARAM_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
     }
 
@@ -191,7 +209,7 @@ class DetailScreenFragment(
         return errorInCount
     }
 
-    fun onClickSaveItem() {
+    private fun onClickSaveItem() {
         val itemNewName = getNewName()
         val itemNewCount = getNewCount()
 
@@ -204,10 +222,10 @@ class DetailScreenFragment(
     }
 
     private fun chooseMode(itemNewName: String, itemNewCount: String) {
-        if (screenMode == MODE_EDIT) {
+        if (screenMode_value == MODE_EDIT) {
             viewModel.editCurrentItem(itemNewName, itemNewCount)
             startMainActivity()
-        } else if (screenMode == MODE_ADD) {
+        } else if (screenMode_value == MODE_ADD) {
 //            showToast("Add new item")
             viewModel.addNewItem(itemNewName, itemNewCount)
             startMainActivity()
@@ -224,30 +242,39 @@ class DetailScreenFragment(
 //    }
 
     companion object {
-        private const val EXTRA_SCREEN_MODE = "extra_mode"
+        private const val PARAM_SCREEN_MODE = "extra_mode"
+        private const val PARAM_SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_ADD = "mode_add"
         private const val MODE_EDIT = "mode_edit"
-        private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
         private const val UNDEFINED_SCREEN_MODE = ""
 
         fun newInstanceAddItem(): DetailScreenFragment {
-            return DetailScreenFragment(MODE_ADD)
+            return DetailScreenFragment().apply {
+                arguments = Bundle().apply {
+                    putString(PARAM_SCREEN_MODE, MODE_ADD)
+                }
+            }
         }
 
         fun newInstanceEditItem(ITEM_ID: Int): DetailScreenFragment {
-            return DetailScreenFragment(MODE_EDIT, ITEM_ID)
+            return DetailScreenFragment().apply {
+                arguments = Bundle().apply {
+                    putString(PARAM_SCREEN_MODE, MODE_EDIT)
+                    putInt(PARAM_SHOP_ITEM_ID, ITEM_ID)
+                }
+            }
         }
 
         fun newIntentAddItem(context: Context): Intent {
             val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
+            intent.putExtra(PARAM_SCREEN_MODE, MODE_ADD)
             return intent
         }
 
         fun newIntentEditItem(context: Context, shopItemID: Int): Intent {
             val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemID)
+            intent.putExtra(PARAM_SCREEN_MODE, MODE_EDIT)
+            intent.putExtra(PARAM_SHOP_ITEM_ID, shopItemID)
             return intent
         }
     }
