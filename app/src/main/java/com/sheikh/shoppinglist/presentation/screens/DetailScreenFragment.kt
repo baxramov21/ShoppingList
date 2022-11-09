@@ -211,8 +211,8 @@ class DetailScreenFragment : Fragment() {
     companion object {
         private const val PARAM_SCREEN_MODE = "extra_mode"
         private const val PARAM_SHOP_ITEM_ID = "extra_shop_item_id"
-        private const val MODE_ADD = "mode_add"
-        private const val MODE_EDIT = "mode_edit"
+        const val MODE_ADD = "mode_add"
+        const val MODE_EDIT = "mode_edit"
         private const val UNDEFINED_SCREEN_MODE = ""
 
         fun newInstanceAddItem(): DetailScreenFragment {
