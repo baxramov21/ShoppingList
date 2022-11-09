@@ -58,6 +58,10 @@ class DetailScreenFragment : Fragment() {
         buttonSave.setOnClickListener {
             onClickSaveItem()
         }
+
+        viewModel.canFinishScreen.observe(viewLifecycleOwner) {
+            activity?.onBackPressed()
+        }
     }
 
 
@@ -202,6 +206,8 @@ class DetailScreenFragment : Fragment() {
             viewModel.addNewItem(itemNewName, itemNewCount)
             startMainActivity()
         }
+        viewModel.closeScreen()
+
     }
 
     private fun startMainActivity() {
