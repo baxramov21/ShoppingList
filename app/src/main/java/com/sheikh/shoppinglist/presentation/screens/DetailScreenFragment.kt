@@ -1,7 +1,5 @@
 package com.sheikh.shoppinglist.presentation.screens
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -29,7 +27,6 @@ class DetailScreenFragment : Fragment() {
     private lateinit var viewModel: ShopItemViewModel
     private lateinit var nameInputError: MutableLiveData<Boolean>
     private lateinit var countInputError: MutableLiveData<Boolean>
-
 
     private var screenMode_value: String = UNDEFINED_SCREEN_MODE
     private var shopItemID_value: Int = ShopItem.UNDEFINED_ID
@@ -84,7 +81,6 @@ class DetailScreenFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 onTextChanged()
             }
-
             override fun afterTextChanged(p0: Editable?) {}
         })
     }
@@ -104,7 +100,7 @@ class DetailScreenFragment : Fragment() {
     }
 
     private fun launchAddItemMode() {
-//        showToast("Create new item")
+       // Show Toast
     }
 
     private fun initET(shopItem: ShopItem) {
@@ -152,29 +148,6 @@ class DetailScreenFragment : Fragment() {
             shopItemID_value = args.getInt(PARAM_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
     }
-
-    /*
-       private fun parseIntent() {
-        if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
-            throw RuntimeException("Param screen mode is null")
-        }
-
-        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
-
-        if (mode != MODE_ADD && mode != MODE_EDIT) {
-            throw RuntimeException("Unknown screen mode")
-        }
-
-        screenMode = mode
-        if (screenMode == MODE_EDIT) {
-            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
-                throw RuntimeException("Unknown screen mode")
-            }
-            shopItemID = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
-            Log.d("id_is", shopItemID.toString())
-        }
-    }
-     */
 
     private fun onErrorInValues() {
         tilName.error = "Name or count is wrong "
@@ -226,20 +199,14 @@ class DetailScreenFragment : Fragment() {
             viewModel.editCurrentItem(itemNewName, itemNewCount)
             startMainActivity()
         } else if (screenMode_value == MODE_ADD) {
-//            showToast("Add new item")
             viewModel.addNewItem(itemNewName, itemNewCount)
             startMainActivity()
         }
     }
 
     private fun startMainActivity() {
-//        startActivity(Intent(this, MainActivity::class.java))
         activity?.onBackPressed()
     }
-//
-//    private fun showToast(message: String) {
-//        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-//    }
 
     companion object {
         private const val PARAM_SCREEN_MODE = "extra_mode"
@@ -263,19 +230,6 @@ class DetailScreenFragment : Fragment() {
                     putInt(PARAM_SHOP_ITEM_ID, ITEM_ID)
                 }
             }
-        }
-
-        fun newIntentAddItem(context: Context): Intent {
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(PARAM_SCREEN_MODE, MODE_ADD)
-            return intent
-        }
-
-        fun newIntentEditItem(context: Context, shopItemID: Int): Intent {
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(PARAM_SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(PARAM_SHOP_ITEM_ID, shopItemID)
-            return intent
         }
     }
 }
