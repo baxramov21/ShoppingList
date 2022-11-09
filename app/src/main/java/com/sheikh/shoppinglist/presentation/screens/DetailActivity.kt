@@ -18,7 +18,8 @@ class DetailActivity : AppCompatActivity() {
         parseIntent()
         launchScreenMode()
     }
-    private fun launchScreenMode() {
+
+    fun launchScreenMode() {
         val fragment = when (screenMode) {
             MODE_ADD -> DetailScreenFragment.newInstanceAddItem()
             MODE_EDIT -> DetailScreenFragment.newInstanceEditItem(shopItemID)
