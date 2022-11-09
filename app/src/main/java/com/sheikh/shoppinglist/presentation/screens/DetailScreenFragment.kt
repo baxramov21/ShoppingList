@@ -28,7 +28,6 @@ class DetailScreenFragment : Fragment() {
     private lateinit var nameInputError: MutableLiveData<Boolean>
     private lateinit var countInputError: MutableLiveData<Boolean>
 
-
     private var screenMode_value: String = UNDEFINED_SCREEN_MODE
     private var shopItemID_value: Int = ShopItem.UNDEFINED_ID
 
@@ -82,7 +81,6 @@ class DetailScreenFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 onTextChanged()
             }
-
             override fun afterTextChanged(p0: Editable?) {}
         })
     }
