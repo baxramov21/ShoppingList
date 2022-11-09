@@ -60,8 +60,10 @@ class MainActivity : AppCompatActivity(), OperationsWithItems {
     }
 
     private fun startFragment(fragment: Fragment) {
+        supportFragmentManager.popBackStack()
         supportFragmentManager.beginTransaction()
-            .add(R.id.shopItemFragmentContainer, fragment)
+            .replace(R.id.shopItemFragmentContainer, fragment)
+            .addToBackStack(null)
             .commit()
     }
 

@@ -100,7 +100,7 @@ class ShopItemViewModel : ViewModel() {
         return result
     }
 
-    private fun closeScreen() {
+    fun closeScreen() {
         _canFinishScreen.value = Unit
     }
 }

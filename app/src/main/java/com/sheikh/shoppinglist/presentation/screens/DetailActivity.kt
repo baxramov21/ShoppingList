@@ -2,6 +2,7 @@ package com.sheikh.shoppinglist.presentation.screens
 
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.parseIntent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sheikh.shoppinglist.R
@@ -16,10 +17,13 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
         parseIntent()
-        launchScreenMode()
+
+        if (savedInstanceState == null) {
+            launchScreenMode()
+        }
     }
 
-    fun launchScreenMode() {
+    private fun launchScreenMode() {
         val fragment = when (screenMode) {
             MODE_ADD -> DetailScreenFragment.newInstanceAddItem()
             MODE_EDIT -> DetailScreenFragment.newInstanceEditItem(shopItemID)
@@ -27,7 +31,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_container_view, fragment)
+            .replace(R.id.fragment_container_view, fragment)
             .commit()
     }
 
