@@ -1,5 +1,6 @@
 package com.sheikh.shoppinglist.presentation.screens
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputLayout
 import com.sheikh.shoppinglist.R
 import com.sheikh.shoppinglist.domain.items.ShopItem
+import com.sheikh.shoppinglist.presentation.screens.interfaces.OnEditingFinishedListener
 import com.sheikh.shoppinglist.presentation.view_model.ShopItemViewModel
 
 class DetailScreenFragment : Fragment() {
@@ -30,6 +32,17 @@ class DetailScreenFragment : Fragment() {
 
     private var screenMode_value: String = UNDEFINED_SCREEN_MODE
     private var shopItemID_value: Int = ShopItem.UNDEFINED_ID
+
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) {
+            onEditingFinishedListener = context
+        } else {
+            throw RuntimeException("Interface OnEditingFinishedListener must be realized")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +73,7 @@ class DetailScreenFragment : Fragment() {
         }
 
         viewModel.canFinishScreen.observe(viewLifecycleOwner) {
+            onEditingFinishedListener.onEditingFinished()
             activity?.onBackPressed()
         }
     }

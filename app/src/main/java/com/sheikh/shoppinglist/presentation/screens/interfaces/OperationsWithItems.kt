@@ -1,4 +1,4 @@
-package com.sheikh.shoppinglist.presentation.screens
+package com.sheikh.shoppinglist.presentation.screens.interfaces
 
 interface OperationsWithItems {
     fun addItem(landscapeOrientation: Boolean)
