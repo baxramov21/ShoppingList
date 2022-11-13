@@ -77,8 +77,6 @@ class DetailScreenFragment : Fragment() {
             activity?.onBackPressed()
         }
     }
-
-
     private fun resetInputErrors() {
         with(viewModel) {
             resetErrorInputName()
