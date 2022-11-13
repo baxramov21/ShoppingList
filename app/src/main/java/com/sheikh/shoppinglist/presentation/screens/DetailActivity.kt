@@ -2,13 +2,14 @@ package com.sheikh.shoppinglist.presentation.screens
 
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.parseIntent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.sheikh.shoppinglist.R
 import com.sheikh.shoppinglist.domain.items.ShopItem
+import com.sheikh.shoppinglist.presentation.screens.interfaces.OnEditingFinishedListener
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), OnEditingFinishedListener {
 
     private var shopItemID = ShopItem.UNDEFINED_ID
     private var screenMode = UNDEFINED_SCREEN_MODE
@@ -71,5 +72,9 @@ class DetailActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemID)
             return intent
         }
+    }
+
+    override fun onEditingFinished() {
+        Toast.makeText(this, "Succes", Toast.LENGTH_SHORT).show()
     }
 }

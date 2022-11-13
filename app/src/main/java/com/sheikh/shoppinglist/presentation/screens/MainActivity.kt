@@ -2,6 +2,7 @@ package com.sheikh.shoppinglist.presentation.screens
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
@@ -10,9 +11,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.sheikh.shoppinglist.R
 import com.sheikh.shoppinglist.presentation.adapter.ShopItemsAdapter
+import com.sheikh.shoppinglist.presentation.screens.interfaces.OnEditingFinishedListener
+import com.sheikh.shoppinglist.presentation.screens.interfaces.OperationsWithItems
 import com.sheikh.shoppinglist.presentation.view_model.MainViewModel
 
-class MainActivity : AppCompatActivity(), OperationsWithItems {
+class MainActivity : AppCompatActivity(), OperationsWithItems, OnEditingFinishedListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var shopItemsAdapter: ShopItemsAdapter
@@ -117,5 +120,9 @@ class MainActivity : AppCompatActivity(), OperationsWithItems {
             val intent = DetailActivity.newIntentEditItem(this, item_ID)
             startActivity(intent)
         }
+    }
+
+    override fun onEditingFinished() {
+        Toast.makeText(this, "Succes", Toast.LENGTH_SHORT).show()
     }
 }
