@@ -28,7 +28,7 @@ class DetailActivity : AppCompatActivity(), OnEditingFinishedListener {
         val fragment = when (screenMode) {
             MODE_ADD -> DetailScreenFragment.newInstanceAddItem()
             MODE_EDIT -> DetailScreenFragment.newInstanceEditItem(shopItemID)
-            else ->  throw RuntimeException("Unknown screen mode")
+            else -> throw RuntimeException("Unknown screen mode")
         }
 
         supportFragmentManager.beginTransaction()

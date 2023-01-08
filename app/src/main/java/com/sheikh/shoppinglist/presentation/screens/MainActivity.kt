@@ -5,11 +5,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.sheikh.shoppinglist.R
+import com.sheikh.shoppinglist.databinding.ActivityMainBinding
 import com.sheikh.shoppinglist.presentation.adapter.ShopItemsAdapter
 import com.sheikh.shoppinglist.presentation.screens.interfaces.OnEditingFinishedListener
 import com.sheikh.shoppinglist.presentation.screens.interfaces.OperationsWithItems
@@ -19,12 +19,15 @@ class MainActivity : AppCompatActivity(), OperationsWithItems, OnEditingFinished
 
     private lateinit var viewModel: MainViewModel
     private lateinit var shopItemsAdapter: ShopItemsAdapter
-    private var shopItemFragmentContainer: FragmentContainerView? = null
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        shopItemFragmentContainer = findViewById(R.id.shopItemFragmentContainer)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setUpRecyclerView()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shoppingList.observe(this) {
@@ -33,7 +36,7 @@ class MainActivity : AppCompatActivity(), OperationsWithItems, OnEditingFinished
     }
 
     private fun isOrientationMode(): Boolean {
-       return shopItemFragmentContainer != null
+        return binding.shopItemFragmentContainer != null
     }
 
     fun newItem(view: View) {
@@ -41,7 +44,7 @@ class MainActivity : AppCompatActivity(), OperationsWithItems, OnEditingFinished
     }
 
     private fun setUpRecyclerView() {
-        val rvShopList: RecyclerView = findViewById(R.id.recyclerViewItems)
+        val rvShopList: RecyclerView = binding.recyclerViewItems
         with(rvShopList) {
             shopItemsAdapter = ShopItemsAdapter()
             adapter = shopItemsAdapter
@@ -59,7 +62,7 @@ class MainActivity : AppCompatActivity(), OperationsWithItems, OnEditingFinished
         }
         setupOnClickListener()
         setUpOnLongClickListener()
-        setupSwipeListener(rvShopList)
+        setupSwipeListener(binding.recyclerViewItems)
     }
 
     private fun startFragment(fragment: Fragment) {
@@ -95,7 +98,7 @@ class MainActivity : AppCompatActivity(), OperationsWithItems, OnEditingFinished
 
     private fun setupOnClickListener() {
         shopItemsAdapter.onShopIteClickListener = {
-          editItem(isOrientationMode(), it.ID)
+            editItem(isOrientationMode(), it.ID)
         }
     }
 
@@ -123,6 +126,6 @@ class MainActivity : AppCompatActivity(), OperationsWithItems, OnEditingFinished
     }
 
     override fun onEditingFinished() {
-        Toast.makeText(this, "Succes", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
     }
 }

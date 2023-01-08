@@ -6,4 +6,7 @@
     <string name="save">Save</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="success">Success</string>
+    <string name="in_name_error">Name is invalid</string>
+    <string name="in_count_error">Count is invalid</string>
 </resources>
