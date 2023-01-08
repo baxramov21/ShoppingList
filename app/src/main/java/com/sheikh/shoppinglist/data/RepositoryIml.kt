@@ -2,6 +2,7 @@ package com.sheikh.shoppinglist.data
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.sheikh.shoppinglist.data.db.AppDatabase
 import com.sheikh.shoppinglist.domain.repository.Repository
 import com.sheikh.shoppinglist.domain.items.ShopItem
@@ -30,7 +31,12 @@ class RepositoryIml(
         shopItemDao.addShopItem(mapper.mapEntityToDbModel(item))
     }
 
-    override fun getShoppingList(): LiveData<List<ShopItem>> {
-        return mapper.mapEntityListToDbModelList()
-    }
+    override fun getShoppingList(): LiveData<List<ShopItem>> =
+        MediatorLiveData<List<ShopItem>>().apply {
+            addSource(shopItemDao.getShopItemsList()) {
+                it?.let {
+                    mapper.mapListDbModelToListEntity(it)
+                }
+            }
+        }
 }
