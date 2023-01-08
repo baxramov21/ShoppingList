@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.sheikh.shoppinglist.data.db.AppDatabase
-import com.sheikh.shoppinglist.domain.repository.Repository
 import com.sheikh.shoppinglist.domain.items.ShopItem
+import com.sheikh.shoppinglist.domain.repository.Repository
 
 class RepositoryIml(
     application: Application
@@ -34,9 +34,7 @@ class RepositoryIml(
     override fun getShoppingList(): LiveData<List<ShopItem>> =
         MediatorLiveData<List<ShopItem>>().apply {
             addSource(shopItemDao.getShopItemsList()) {
-                it?.let {
-                    mapper.mapListDbModelToListEntity(it)
-                }
+                value = mapper.mapListDbModelToListEntity(it)
             }
         }
 }

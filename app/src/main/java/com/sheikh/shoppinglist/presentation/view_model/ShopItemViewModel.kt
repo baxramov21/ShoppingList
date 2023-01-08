@@ -1,6 +1,8 @@
 package com.sheikh.shoppinglist.presentation.view_model
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,9 +13,9 @@ import com.sheikh.shoppinglist.domain.items.GetShopItem
 import com.sheikh.shoppinglist.domain.items.ShopItem
 import java.lang.Exception
 
-class ShopItemViewModel : ViewModel() {
+class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = RepositoryIml
+    private val repository = RepositoryIml(application)
 
     private val _errorInputName = MutableLiveData<Boolean>()
     val errorInputName: LiveData<Boolean>
