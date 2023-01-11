@@ -5,13 +5,13 @@ import com.sheikh.shoppinglist.domain.items.ShopItem
 
 interface Repository {
 
-    fun getShopItem(id: Int): ShopItem
+    suspend fun getShopItem(id: Int): ShopItem
 
-    fun editShopItem(item: ShopItem)
+    suspend fun editShopItem(item: ShopItem)
 
-    fun deleteShopItem(item: ShopItem)
+    suspend fun deleteShopItem(item: ShopItem)
 
-    fun addShopItem(item: ShopItem)
+    suspend fun addShopItem(item: ShopItem)
 
     fun getShoppingList(): LiveData<List<ShopItem>>
 }
