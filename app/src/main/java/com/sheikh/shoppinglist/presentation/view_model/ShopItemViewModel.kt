@@ -2,10 +2,7 @@ package com.sheikh.shoppinglist.presentation.view_model
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.sheikh.shoppinglist.data.RepositoryIml
 import com.sheikh.shoppinglist.domain.usecases.AddShopItemUseCase
 import com.sheikh.shoppinglist.domain.usecases.EditShopItemUseCase
@@ -18,8 +15,6 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     private val repository = RepositoryIml(application)
 
@@ -44,7 +39,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     private val addShopItemUseCase = AddShopItemUseCase(repository)
 
     fun editCurrentItem(inputName: String?, inputCount: String?) {
-        scope.launch {
+        viewModelScope.launch {
             val name = parseName(inputName)
             val count = parseCount(inputCount)
             val isInputsValid = validateInputs(name, count)
@@ -61,7 +56,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun addNewItem(inputName: String?, inputCount: String?) {
-        scope.launch {
+        viewModelScope.launch {
             val name = parseName(inputName)
             val count = parseCount(inputCount)
             val isInputsValid = validateInputs(name, count)
@@ -74,7 +69,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getItem(ID: Int) {
-        scope.launch {
+        viewModelScope.launch {
             val item = getItemByID.getShopItem(ID)
             _shopItem.value = item
         }
@@ -116,11 +111,6 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
 
     private fun closeScreen() {
         _canFinishScreen.value = Unit
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        scope.cancel()
     }
 
 }
