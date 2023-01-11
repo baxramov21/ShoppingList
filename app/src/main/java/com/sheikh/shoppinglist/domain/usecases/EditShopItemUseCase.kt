@@ -5,7 +5,7 @@ import com.sheikh.shoppinglist.domain.items.ShopItem
 
 class EditShopItemUseCase(private val repository: Repository) {
 
-    fun editShopItem(item: ShopItem) {
+    suspend fun editShopItem(item: ShopItem) {
         repository.editShopItem(item)
     }
 }

@@ -11,9 +11,15 @@ import com.sheikh.shoppinglist.domain.usecases.AddShopItemUseCase
 import com.sheikh.shoppinglist.domain.usecases.EditShopItemUseCase
 import com.sheikh.shoppinglist.domain.items.GetShopItem
 import com.sheikh.shoppinglist.domain.items.ShopItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     private val repository = RepositoryIml(application)
 
@@ -38,34 +44,40 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     private val addShopItemUseCase = AddShopItemUseCase(repository)
 
     fun editCurrentItem(inputName: String?, inputCount: String?) {
-        val name = parseName(inputName)
-        val count = parseCount(inputCount)
-        val isInputsValid = validateInputs(name, count)
-        Log.d("inputsValid",isInputsValid.toString())
-        if (isInputsValid) {
-            _shopItem.value?.let {
-                val copiedItem = it.copy(shopItemName = name, shopItemCount = count)
-                editItemUseCase.editShopItem(copiedItem)
-                Log.d("itemIS", it.toString())
-                closeScreen()
+        scope.launch {
+            val name = parseName(inputName)
+            val count = parseCount(inputCount)
+            val isInputsValid = validateInputs(name, count)
+            Log.d("inputsValid", isInputsValid.toString())
+            if (isInputsValid) {
+                _shopItem.value?.let {
+                    val copiedItem = it.copy(shopItemName = name, shopItemCount = count)
+                    editItemUseCase.editShopItem(copiedItem)
+                    Log.d("itemIS", it.toString())
+                    closeScreen()
+                }
             }
         }
     }
 
     fun addNewItem(inputName: String?, inputCount: String?) {
-        val name = parseName(inputName)
-        val count = parseCount(inputCount)
-        val isInputsValid = validateInputs(name, count)
-        if (isInputsValid) {
-            val item = ShopItem(name, count, true)
-            addShopItemUseCase.addShopItem(item)
-            closeScreen()
+        scope.launch {
+            val name = parseName(inputName)
+            val count = parseCount(inputCount)
+            val isInputsValid = validateInputs(name, count)
+            if (isInputsValid) {
+                val item = ShopItem(name, count, true)
+                addShopItemUseCase.addShopItem(item)
+                closeScreen()
+            }
         }
     }
 
     fun getItem(ID: Int) {
-        val item = getItemByID.getShopItem(ID)
-        _shopItem.value = item
+        scope.launch {
+            val item = getItemByID.getShopItem(ID)
+            _shopItem.value = item
+        }
     }
 
     fun resetErrorInputName() {
@@ -102,7 +114,13 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
         return result
     }
 
-    fun closeScreen() {
+    private fun closeScreen() {
         _canFinishScreen.value = Unit
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        scope.cancel()
+    }
+
 }
